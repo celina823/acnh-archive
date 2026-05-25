@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Navbar from "../components/Navbar";
+import QueryProvider from "@/components/QueryProvider";
 
 export const metadata: Metadata = {
   title: "ACNH Archive",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Navbar />
-        {children}
+        <QueryProvider>
+          <Navbar />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

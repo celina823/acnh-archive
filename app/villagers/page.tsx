@@ -1,19 +1,23 @@
-import { getVillagers } from "@/lib/api/villagers";
+import VillagersInfiniteList from "@/components/VillagersInfiniteList";
 
-export default async function VillagersPage() {
-  const villagers = await getVillagers();
+export default function VillagersPage() {
   return (
-    <main>
-      <h1>주민 목록</h1>
-
-      {villagers.map((villager) => (
-        <div key={villager.id}>
-          <img src={villager.image_url} alt={villager.name} width={100} />
-
-          <p>{villager.name}</p>
-          <p>{villager.personality}</p>
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
+            모여봐요 동물의 숲
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold text-slate-900">
+            주민 목록
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            이미지의 카드 레이아웃을 참고해 주민 정보를 카드 형태로 보여줍니다.
+            아래로 스크롤하면 자동으로 10개씩 더 불러옵니다.
+          </p>
         </div>
-      ))}
+      </div>
+      <VillagersInfiniteList />
     </main>
   );
 }
