@@ -1,16 +1,22 @@
+import FurnitureInfiniteList from "@/components/FurnitureInfiniteList";
+
 export default function FurniturePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-pink-200 via-purple-200 to-blue-200 py-12">
-      <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-purple-800 mb-4">가구</h1>
-        <p className="text-purple-700 mb-8">
-          섬을 꾸미는 다양한 가구들을 탐색하세요.
-        </p>
-
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <p className="text-gray-600">가구 정보가 준비 중입니다.</p>
+    <main className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
+            모여봐요 동물의 숲
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold text-slate-900">
+            가구 목록
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            아래로 스크롤하면 가구 데이터를 자동으로 더 불러옵니다.
+          </p>
         </div>
       </div>
+      <FurnitureInfiniteList />
     </main>
   );
 }
