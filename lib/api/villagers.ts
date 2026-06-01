@@ -5,6 +5,49 @@ const animalCrossingVillagersByName = new Map(
   animalCrossingVillagers.map((villager) => [villager.name, villager]),
 );
 
+const koKrSpeciesNames: Record<string, string> = {
+  alligator: "악어",
+  anteater: "개미핥기",
+  bear: "곰",
+  "bear cub": "아기곰",
+  bird: "새",
+  bull: "황소",
+  cat: "고양이",
+  chicken: "닭",
+  cow: "소",
+  cub: "아기곰",
+  deer: "사슴",
+  dog: "개",
+  duck: "오리",
+  eagle: "독수리",
+  elephant: "코끼리",
+  frog: "개구리",
+  goat: "염소",
+  gorilla: "고릴라",
+  hamster: "햄스터",
+  hippo: "하마",
+  horse: "말",
+  kangaroo: "캥거루",
+  koala: "코알라",
+  lion: "사자",
+  monkey: "원숭이",
+  mouse: "생쥐",
+  octopus: "문어",
+  ostrich: "타조",
+  penguin: "펭귄",
+  pig: "돼지",
+  rabbit: "토끼",
+  rhino: "코뿔소",
+  rhinoceros: "코뿔소",
+  sheep: "양",
+  squirrel: "다람쥐",
+  tiger: "호랑이",
+  wolf: "늑대",
+};
+
+const getKoKrSpeciesName = (species: string) =>
+  koKrSpeciesNames[species.toLowerCase()] ?? species;
+
 export const getVillagers = async (): Promise<VillagerType[]> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/villagers?game=nh&nhdetails=true`,
@@ -28,6 +71,7 @@ export const getVillagers = async (): Promise<VillagerType[]> => {
 
     return {
       ...villager,
+      species: getKoKrSpeciesName(villager.species),
       catchphrase: matchingVillager?.catchphrases.kRko ?? villager.phrase,
       translations: {
         ...villager.translations,
