@@ -21,6 +21,7 @@ export interface VillagerType {
 
   quote: string;
   phrase: string;
+  catchphrase?: string;
 
   clothing: string;
 
@@ -31,4 +32,8 @@ export interface VillagerType {
   prev_phrases: string[];
 
   appearances: string[];
+
+  translations?: {
+    koKr?: string;
+  };
 }

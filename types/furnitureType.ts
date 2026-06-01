@@ -47,6 +47,10 @@ export type FurnitureItemType = {
   buy: FurnitureBuyType[];
 
   variations: FurnitureVariationType[];
+
+  translations?: {
+    koKr?: string;
+  };
 };
 
 export type FurnitureAvailabilityType = {

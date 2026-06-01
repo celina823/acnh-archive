@@ -27,7 +27,13 @@ const fetchFurniturePage = async ({
   );
 
   if (!response.ok) {
-    throw new Error("가구 데이터를 불러오는데 실패했습니다.");
+    const errorBody = (await response.json().catch(() => null)) as {
+      message?: string;
+    } | null;
+
+    throw new Error(
+      errorBody?.message ?? "가구 데이터를 불러오지 못했습니다.",
+    );
   }
 
   return response.json();
@@ -41,12 +47,11 @@ function FurnitureCard({ item }: { item: FurnitureItemType }) {
     item.variations?.[0]?.pattern ?? "",
   );
 
+  const koreanName = item?.translations?.koKr;
+  const displayName = koreanName ?? item.name;
+
   const uniqueFrames = useMemo(
     () => [...new Set(item.variations?.map((v) => v.variation) ?? [])],
-    [item.variations],
-  );
-  const uniquePatterns = useMemo(
-    () => [...new Set(item.variations?.map((v) => v.pattern) ?? [])],
     [item.variations],
   );
 
@@ -57,6 +62,7 @@ function FurnitureCard({ item }: { item: FurnitureItemType }) {
         .map((v) => v.pattern) ?? [],
     [item.variations, selectedFrame],
   );
+
   const uniquePatternsForFrame = useMemo(
     () => [...new Set(patternsForFrame)],
     [patternsForFrame],
@@ -81,9 +87,9 @@ function FurnitureCard({ item }: { item: FurnitureItemType }) {
       <div className="relative aspect-[4/3] w-full max-w-full overflow-hidden bg-slate-100">
         <img
           src={mainSrc}
-          alt={`${item.name} ${selectedVariation?.variation ?? ""}`}
+          alt={`${displayName} ${selectedVariation?.variation ?? ""}`}
           loading="lazy"
-          className="block h-full w-full max-w-full max-h-full min-w-0 object-contain"
+          className="block h-full max-h-full w-full max-w-full min-w-0 object-contain"
           style={{ width: "100%", height: "100%" }}
         />
       </div>
@@ -92,7 +98,7 @@ function FurnitureCard({ item }: { item: FurnitureItemType }) {
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold text-slate-900">
-              {item.name}
+              {displayName}
             </h2>
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-600">
               {item.category}
@@ -160,7 +166,7 @@ function FurnitureCard({ item }: { item: FurnitureItemType }) {
               <div className="rounded-2xl bg-white p-4 text-sm text-slate-700 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-medium">
-                    색상: {selectedVariation.variation}
+                    색상: {selectedVariation.variation || "기본"}
                   </span>
                   {selectedVariation.pattern ? (
                     <span className="text-xs text-slate-500">
@@ -201,7 +207,7 @@ function FurnitureCard({ item }: { item: FurnitureItemType }) {
               리폼: {item.customizable ? "가능" : "불가능"}
             </span>
             <span className="rounded-2xl bg-slate-100 px-3 py-1">
-              추가된 버전: {item.version_added}
+              추가 버전: {item.version_added}
             </span>
           </div>
         </div>
@@ -280,7 +286,9 @@ export default function FurnitureInfiniteList() {
   if (isError) {
     return (
       <section className="px-4 py-12 text-center text-red-600 sm:px-6 lg:px-8">
-        <p className="text-lg font-medium">데이터를 불러오지 못했습니다.</p>
+        <p className="text-lg font-medium">
+          데이터를 불러오지 못했습니다.
+        </p>
         <p className="mt-2 text-sm">{error?.message}</p>
       </section>
     );
@@ -304,8 +312,8 @@ export default function FurnitureInfiniteList() {
         {hasNextPage
           ? isFetchingNextPage
             ? "불러오는 중..."
-            : "스크롤을 내려서 더 많은 가구를 불러오세요."
-          : "모든 가구 데이터를 로드했습니다."}
+            : "스크롤을 내려 더 많은 가구를 불러오세요."
+          : "모든 가구 데이터를 불러왔습니다."}
       </div>
     </section>
   );
