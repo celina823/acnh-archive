@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import {
   InfiniteData,
+  keepPreviousData,
   QueryFunctionContext,
   useInfiniteQuery,
 } from "@tanstack/react-query";
@@ -17,23 +19,27 @@ type VillagersResponse = {
 
 const fetchVillagersPage = async ({
   pageParam,
+  queryKey,
 }: QueryFunctionContext<
-  readonly ["villagers"],
+  readonly ["villagers", string],
   string | null
 >): Promise<VillagersResponse> => {
-  const response = await fetch(
-    `/api/villagers?cursor=${pageParam ?? ""}&limit=${ITEMS_PER_PAGE}`,
-    { cache: "no-store" },
-  );
+  const [, search] = queryKey;
+  const searchParams = new URLSearchParams({
+    cursor: pageParam ?? "",
+    limit: ITEMS_PER_PAGE.toString(),
+    search,
+  });
+  const response = await fetch(`/api/villagers?${searchParams.toString()}`, {
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     const errorBody = (await response.json().catch(() => null)) as {
       message?: string;
     } | null;
 
-    throw new Error(
-      errorBody?.message ?? "주민 데이터를 불러오지 못했습니다.",
-    );
+    throw new Error(errorBody?.message ?? "주민 데이터를 불러오지 못했습니다.");
   }
 
   return response.json();
@@ -41,6 +47,8 @@ const fetchVillagersPage = async ({
 
 export default function VillagersInfiniteList() {
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const [search, setSearch] = useState("");
+  const normalizedSearch = search.trim();
 
   const {
     data,
@@ -54,13 +62,14 @@ export default function VillagersInfiniteList() {
     VillagersResponse,
     Error,
     InfiniteData<VillagersResponse, string | null>,
-    readonly ["villagers"],
+    readonly ["villagers", string],
     string | null
   >({
-    queryKey: ["villagers"],
+    queryKey: ["villagers", normalizedSearch],
     queryFn: fetchVillagersPage,
     initialPageParam: null,
     getNextPageParam: (last) => last.nextCursor,
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 3,
   });
 
@@ -106,6 +115,25 @@ export default function VillagersInfiniteList() {
 
   return (
     <section className="space-y-8 pb-16 pt-6">
+      <label className="relative block w-full">
+        <span className="sr-only">Search villagers by name</span>
+        <input
+          type="search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search villagers by name"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 pr-14 text-base text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+        />
+        <Image
+          src="/icon-search.png"
+          alt=""
+          aria-hidden="true"
+          width={20}
+          height={20}
+          className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 object-contain"
+        />
+      </label>
+
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visibleVillagers.map((villager, index) => {
           const koreanName = villager?.translations?.koKr;
@@ -118,11 +146,12 @@ export default function VillagersInfiniteList() {
               className="group overflow-hidden rounded-[32px] border border-slate-200/80 bg-white shadow-lg shadow-slate-200/70 transition hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                <img
+                <Image
                   src={villager.image_url}
                   alt={displayName}
-                  loading="lazy"
-                  className="h-full w-full object-contain"
+                  fill
+                  sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-contain"
                 />
                 <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-slate-800 shadow-sm">
                   {villager.species}

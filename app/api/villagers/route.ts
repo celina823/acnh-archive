@@ -6,8 +6,13 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const cursor = url.searchParams.get("cursor") ?? null;
     const limit = Number(url.searchParams.get("limit") ?? "10");
+    const search = url.searchParams.get("search") ?? "";
 
-    const { villagers, nextCursor } = await getVillagersPage(cursor, limit);
+    const { villagers, nextCursor } = await getVillagersPage(
+      cursor,
+      limit,
+      search,
+    );
     return NextResponse.json({ items: villagers, nextCursor });
   } catch {
     return NextResponse.json(

@@ -84,15 +84,29 @@ export const getVillagers = async (): Promise<VillagerType[]> => {
 export const getVillagersPage = async (
   cursor: string | null,
   limit: number,
+  search = "",
 ): Promise<{ villagers: VillagerType[]; nextCursor: string | null }> => {
   const allVillagers = await getVillagers();
+  const normalizedSearch = search.trim().toLowerCase();
+  const filteredVillagers = normalizedSearch
+    ? allVillagers.filter((villager) => {
+        const searchableNames = [
+          villager.name,
+          villager.translations?.koKr,
+        ].filter((name): name is string => Boolean(name));
+
+        return searchableNames.some((name) =>
+          name.toLowerCase().includes(normalizedSearch),
+        );
+      })
+    : allVillagers;
 
   const startIndex = cursor ? Number(cursor) : 0;
   const endIndex = startIndex + limit;
-  const paginatedVillagers = allVillagers.slice(startIndex, endIndex);
+  const paginatedVillagers = filteredVillagers.slice(startIndex, endIndex);
 
   const nextCursor =
-    endIndex < allVillagers.length ? endIndex.toString() : null;
+    endIndex < filteredVillagers.length ? endIndex.toString() : null;
 
   return { villagers: paginatedVillagers, nextCursor };
 };
