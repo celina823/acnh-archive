@@ -8,9 +8,13 @@ import {
   QueryFunctionContext,
   useInfiniteQuery,
 } from "@tanstack/react-query";
+import {
+  formatVillagerColor,
+  formatVillagerStyle,
+} from "@/lib/mappings/villagerMappings";
 import type { VillagerType } from "@/types/villagersType";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 20;
 
 type VillagersResponse = {
   items: VillagerType[];
@@ -39,7 +43,9 @@ const fetchVillagersPage = async ({
       message?: string;
     } | null;
 
-    throw new Error(errorBody?.message ?? "주민 데이터를 불러오지 못했습니다.");
+    throw new Error(
+      errorBody?.message ?? "주민 데이터를 불러오지 못했습니다.",
+    );
   }
 
   return response.json();
@@ -107,7 +113,9 @@ export default function VillagersInfiniteList() {
   if (isError) {
     return (
       <section className="px-4 py-12 text-center text-red-600 sm:px-6 lg:px-8">
-        <p className="text-lg font-medium">데이터를 불러오지 못했습니다.</p>
+        <p className="text-lg font-medium">
+          데이터를 불러오지 못했습니다.
+        </p>
         <p className="mt-2 text-sm">{error?.message}</p>
       </section>
     );
@@ -136,8 +144,9 @@ export default function VillagersInfiniteList() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visibleVillagers.map((villager, index) => {
-          const koreanName = villager?.translations?.koKr;
-          const displayName = koreanName ?? villager.name;
+          const displayName = villager.translations?.koKr ?? villager.name;
+          const favoriteStyles = villager.nh_details?.fav_styles ?? [];
+          const favoriteColors = villager.nh_details?.fav_colors ?? [];
 
           return (
             <article
@@ -159,15 +168,13 @@ export default function VillagersInfiniteList() {
               </div>
 
               <div className="space-y-4 p-5">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <h2 className="text-xl font-semibold text-slate-900">
-                      {displayName}
-                    </h2>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-600">
-                      {villager.gender}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-xl font-semibold text-slate-900">
+                    {displayName}
+                  </h2>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-600">
+                    {villager.gender}
+                  </span>
                 </div>
 
                 <div className="grid gap-3 text-sm text-slate-700">
@@ -181,13 +188,52 @@ export default function VillagersInfiniteList() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
-                      생일: {villager.birthday_month}월 {villager.birthday_day}
-                      일
+                      생일: {villager.birthday_month}월 {villager.birthday_day}일
                     </span>
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
                       별자리: {villager.sign}
                     </span>
                   </div>
+
+                  {(favoriteStyles.length > 0 || favoriteColors.length > 0) && (
+                    <div className="grid gap-3 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4">
+                      {favoriteStyles.length > 0 && (
+                        <div>
+                          <p className="font-semibold text-slate-800">
+                            좋아하는 스타일
+                          </p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {favoriteStyles.map((style) => (
+                              <span
+                                key={`${villager.id}-style-${style}`}
+                                className="rounded-2xl bg-white px-3 py-1 text-slate-700 shadow-sm"
+                              >
+                                {formatVillagerStyle(style)}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {favoriteColors.length > 0 && (
+                        <div>
+                          <p className="font-semibold text-slate-800">
+                            좋아하는 색상
+                          </p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {favoriteColors.map((color) => (
+                              <span
+                                key={`${villager.id}-color-${color}`}
+                                className="rounded-2xl bg-white px-3 py-1 text-slate-700 shadow-sm"
+                              >
+                                {formatVillagerColor(color)}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm leading-6 text-slate-700">

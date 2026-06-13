@@ -33,7 +33,37 @@ export interface VillagerType {
 
   appearances: string[];
 
+  nh_details?: VillagerNhDetails;
+
   translations?: {
     koKr?: string;
   };
+}
+
+export interface VillagerNhDetails {
+  image_url: string;
+  photo_url: string;
+  icon_url: string;
+  quote: string;
+
+  "sub-personality": string;
+
+  catchphrase: string;
+  clothing: string;
+  clothing_variation: string;
+
+  fav_styles: string[];
+  fav_colors: string[];
+
+  hobby: string;
+
+  house_interior_url: string;
+  house_exterior_url: string;
+
+  house_wallpaper: string;
+  house_flooring: string;
+  house_music: string;
+  house_music_note: string;
+
+  umbrella: string;
 }

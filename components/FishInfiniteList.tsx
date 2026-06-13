@@ -7,6 +7,10 @@ import {
   QueryFunctionContext,
   useInfiniteQuery,
 } from "@tanstack/react-query";
+import {
+  formatFishAvailability,
+  formatFishLocation,
+} from "@/lib/mappings/fishMappings";
 import type { Fish } from "@/types/fishType";
 
 const ITEMS_PER_PAGE = 12;
@@ -40,93 +44,17 @@ const fetchFishPage = async ({
     );
   }
 
-  const data = (await response.json()) as FishResponse;
-
-  console.log("🐟 fish API response:", data);
-  console.log("🐠 fish items:", data.items);
-
-  return data;
+  return response.json();
 };
 
 function formatBells(value: number | string) {
   return `${Number(value).toLocaleString()} 벨`;
 }
 
-const englishMonthToNumber: Record<string, number> = {
-  Jan: 1,
-  Feb: 2,
-  Mar: 3,
-  Apr: 4,
-  May: 5,
-  Jun: 6,
-  Jul: 7,
-  Aug: 8,
-  Sep: 9,
-  Oct: 10,
-  Nov: 11,
-  Dec: 12,
-};
-
-const locationNames: Record<string, string> = {
-  River: "강",
-  Sea: "바다",
-  Pier: "부두",
-  Pond: "연못",
-  "River (clifftop)": "절벽 위 강",
-  "River (mouth)": "강 하구",
-};
-
-function formatLocation(location: string) {
-  return locationNames[location] ?? location;
-}
-
-function formatMonths(months: string) {
-  if (!months || months === "NA" || months === "All year") return "상시";
-
-  return months
-    .replace(/Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec/g, (month) => {
-      return `${englishMonthToNumber[month]}월`;
-    })
-    .replace(/\s*(?:–|-|\?\?)\s*/g, "~")
-    .replace(/(\d+)월~(\d+)월/g, "$1~$2월");
-}
-
-function formatTime(time: string) {
-  if (!time || time === "NA" || time === "All day") return "하루 종일";
-
-  return time
-    .replace(/\s*(?:–|-|\?\?)\s*/g, "~")
-    .replace(/(\d+)\s*AM/g, "오전 $1시")
-    .replace(/(\d+)\s*PM/g, "오후 $1시");
-}
-
-function formatAvailability(fish: Fish) {
-  const availability =
-    fish.availability_north ?? fish.north?.availability_array;
-
-  if (availability?.length) {
-    return availability
-      .map(({ months, time }) => `${formatMonths(months)} ${formatTime(time)}`)
-      .join(", ");
-  }
-
-  const months = formatMonths(fish.n_availability ?? fish.north?.months ?? "");
-  const timesByMonth = fish.times_by_month_north ?? fish.north?.times_by_month;
-  const times = [
-    ...new Set(
-      Object.values(timesByMonth ?? {}).filter((time) => time && time !== "NA"),
-    ),
-  ];
-  const time =
-    times.length > 0 ? times.map(formatTime).join(", ") : "하루 종일";
-
-  return `${months} ${time}`;
-}
-
 function FishCard({ fish }: { fish: Fish }) {
   const imageSrc = fish.render_url || fish.image_url;
-  const northernAvailability = formatAvailability(fish);
-  const location = formatLocation(fish.location);
+  const northernAvailability = formatFishAvailability(fish);
+  const location = formatFishLocation(fish.location);
   const displayName = fish.translations?.koKr ?? fish.name;
 
   return (
@@ -252,7 +180,9 @@ export default function FishInfiniteList() {
   if (isError) {
     return (
       <section className="px-4 py-12 text-center text-red-600 sm:px-6 lg:px-8">
-        <p className="text-lg font-medium">데이터를 불러오지 못했습니다.</p>
+        <p className="text-lg font-medium">
+          데이터를 불러오지 못했습니다.
+        </p>
         <p className="mt-2 text-sm">{error?.message}</p>
       </section>
     );
