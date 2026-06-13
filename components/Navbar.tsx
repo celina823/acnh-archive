@@ -7,7 +7,7 @@ export default function Navbar() {
   const [openCatalog, setOpenCatalog] = useState(false);
 
   const catalogItems = [
-    { label: "곤충", href: "/catalog/insects" },
+    { label: "곤충", href: "/catalog/bugs" },
     { label: "물고기", href: "/catalog/fish" },
     { label: "해산물", href: "/catalog/seacreatures" },
     { label: "화석", href: "/catalog/fossils" },
