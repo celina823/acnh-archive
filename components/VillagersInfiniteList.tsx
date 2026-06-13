@@ -54,6 +54,11 @@ const fetchVillagersPage = async ({
 export default function VillagersInfiniteList() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const [search, setSearch] = useState("");
+  const [selectedHouse, setSelectedHouse] = useState<{
+    name: string;
+    imageUrl: string;
+  } | null>(null);
+  const [houseImageError, setHouseImageError] = useState(false);
   const normalizedSearch = search.trim();
 
   const {
@@ -147,6 +152,7 @@ export default function VillagersInfiniteList() {
           const displayName = villager.translations?.koKr ?? villager.name;
           const favoriteStyles = villager.nh_details?.fav_styles ?? [];
           const favoriteColors = villager.nh_details?.fav_colors ?? [];
+          const houseExteriorUrl = villager.nh_details?.house_exterior_url;
 
           return (
             <article
@@ -248,6 +254,22 @@ export default function VillagersInfiniteList() {
                   <p className="mt-2">{villager.quote}</p>
                 </div>
 
+                {houseExteriorUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHouseImageError(false);
+                      setSelectedHouse({
+                        name: displayName,
+                        imageUrl: houseExteriorUrl,
+                      });
+                    }}
+                    className="w-fit rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                  >
+                    집 이미지
+                  </button>
+                )}
+
                 <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.22em] text-slate-500">
                   {villager.appearances.map((appearance: string) => (
                     <span
@@ -271,6 +293,54 @@ export default function VillagersInfiniteList() {
             : "스크롤을 내려 더 많은 주민을 불러오세요."
           : "모든 주민 데이터를 불러왔습니다."}
       </div>
+
+      {selectedHouse && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4 py-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedHouse.name} 집 이미지`}
+          onClick={() => {
+            setSelectedHouse(null);
+            setHouseImageError(false);
+          }}
+        >
+          <div
+            className="w-full max-w-3xl overflow-hidden rounded-[32px] bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-4">
+              <h2 className="text-lg font-semibold text-slate-900">
+                {selectedHouse.name} 집 이미지
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedHouse(null);
+                  setHouseImageError(false);
+                }}
+                className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+              >
+                닫기
+              </button>
+            </div>
+            <div className="bg-slate-50 p-6">
+              {houseImageError ? (
+                <div className="flex min-h-64 items-center justify-center rounded-3xl border border-red-100 bg-red-50 px-6 py-12 text-center text-sm font-medium text-red-700">
+                  이미지를 불러오는 데 실패했습니다.
+                </div>
+              ) : (
+                <img
+                  src={selectedHouse.imageUrl}
+                  alt={`${selectedHouse.name} 집 외관`}
+                  className="mx-auto max-h-[70vh] w-full object-contain"
+                  onError={() => setHouseImageError(true)}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
