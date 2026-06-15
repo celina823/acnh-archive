@@ -38,7 +38,9 @@ export const getFishPage = async (
   cursor: string | null,
   limit: number,
 ): Promise<{ fish: Fish[]; nextCursor: string | null }> => {
-  const allFish = await getFish();
+  const allFish = [...(await getFish())].sort(
+    (a, b) => Number(a.number) - Number(b.number),
+  );
 
   const startIndex = cursor ? Number(cursor) : 0;
   const endIndex = startIndex + limit;

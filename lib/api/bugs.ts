@@ -7,7 +7,10 @@ const koKrBugNames = new Map(
       (creature) =>
         creature.sourceSheet === "Insects" && creature.translations?.kRko,
     )
-    .map((creature) => [creature.name.toLowerCase(), creature.translations!.kRko]),
+    .map((creature) => [
+      creature.name.toLowerCase(),
+      creature.translations!.kRko,
+    ]),
 );
 
 export const getBugs = async (): Promise<BugType[]> => {
@@ -33,7 +36,7 @@ export const getBugs = async (): Promise<BugType[]> => {
 };
 
 export const getBugsPage = async (cursor: string | null, limit: number) => {
-  const allBugs = (await getBugs()).toSorted(
+  const allBugs = (await getBugs()).sort(
     (a, b) => Number(a.number) - Number(b.number),
   );
   const parsedCursor = cursor ? Number(cursor) : 0;
