@@ -10,6 +10,7 @@ import {
 import {
   formatFishAvailability,
   formatFishLocation,
+  formatFishShadowSize,
 } from "@/lib/mappings/fishMappings";
 import type { Fish } from "@/types/fishType";
 
@@ -65,21 +66,26 @@ function FishCard({ fish }: { fish: Fish }) {
           alt={displayName}
           fill
           sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-contain p-6"
+          className="object-contain p-6 transition duration-300 group-hover:scale-105"
         />
       </div>
 
       <div className="space-y-4 p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900">
+            <p className="text-xs font-semibold text-blue-700">
+              No. {fish.number}
+            </p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-900">
               {displayName}
             </h2>
             <p className="mt-1 text-sm text-slate-500">{location}</p>
           </div>
-          <span className="shrink-0 rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-800">
-            {fish.rarity}
-          </span>
+          {fish.rarity && (
+            <span className="shrink-0 rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-800">
+              {fish.rarity}
+            </span>
+          )}
         </div>
 
         <div className="grid gap-3 text-sm text-slate-700">
@@ -88,7 +94,7 @@ function FishCard({ fish }: { fish: Fish }) {
               잡히는 곳: {location}
             </span>
             <span className="rounded-2xl bg-slate-100 px-3 py-1">
-              그림자: {fish.shadow_size}
+              그림자 크기: {formatFishShadowSize(fish.shadow_size)}
             </span>
             <span className="rounded-2xl bg-slate-100 px-3 py-1">
               잡은 횟수: {fish.total_catch}
@@ -180,9 +186,7 @@ export default function FishInfiniteList() {
   if (isError) {
     return (
       <section className="px-4 py-12 text-center text-red-600 sm:px-6 lg:px-8">
-        <p className="text-lg font-medium">
-          데이터를 불러오지 못했습니다.
-        </p>
+        <p className="text-lg font-medium">데이터를 불러오지 못했습니다.</p>
         <p className="mt-2 text-sm">{error?.message}</p>
       </section>
     );

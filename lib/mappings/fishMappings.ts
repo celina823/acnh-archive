@@ -22,10 +22,24 @@ export const fishLocationNames: Record<string, string> = {
   Pond: "연못",
   "River (clifftop)": "절벽 위 강",
   "River (mouth)": "강 하구",
+  "Sea (raining)": "비 오는 날 바다",
+};
+
+const fishShadowSizes: Record<string, number> = {
+  Tiny: 1,
+  Small: 2,
+  Medium: 3,
+  Large: 4,
+  "Very large": 5,
+  Huge: 6,
 };
 
 export function formatFishLocation(location: string) {
   return fishLocationNames[location] ?? location;
+}
+
+export function formatFishShadowSize(shadowSize: string) {
+  return fishShadowSizes[shadowSize] ?? shadowSize;
 }
 
 export function formatFishMonths(months: string) {
