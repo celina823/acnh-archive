@@ -1,15 +1,15 @@
-export default function InsectsPage() {
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-pink-200 via-purple-200 to-blue-200 py-12">
-      <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-purple-800 mb-4">곤충</h1>
-        <p className="text-purple-700 mb-8">
-          동물의 숲에서 찾을 수 있는 곤충들입니다.
-        </p>
+import BugsInfiniteList from "@/components/BugsInfiniteList";
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <p className="text-gray-600">곤충 정보가 준비 중입니다.</p>
-        </div>
+export default function BugsPage() {
+  return (
+    <main className="min-h-screen bg-slate-50 px-4 text-slate-900 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl pt-10">
+        <p className="text-sm uppercase tracking-[0.3em] text-emerald-700">ACNH Catalog</p>
+        <h1 className="mt-2 text-3xl font-semibold">곤충 목록</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+          곤충의 출현 장소와 시기, 날씨, 판매 가격을 카드로 확인할 수 있습니다.
+        </p>
+        <BugsInfiniteList />
       </div>
     </main>
   );
