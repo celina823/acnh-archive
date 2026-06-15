@@ -16,7 +16,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-gradient-to-b from-pink-300 to-purple-300 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* 로고 */}
           <Link href="/" className="flex items-center">
