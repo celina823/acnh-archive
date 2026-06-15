@@ -149,7 +149,7 @@ export default function FishInfiniteList() {
     queryFn: fetchFishPage,
     initialPageParam: null,
     getNextPageParam: (last) => last.nextCursor,
-    staleTime: 1000 * 60 * 3,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   const visibleFish = useMemo<Fish[]>(

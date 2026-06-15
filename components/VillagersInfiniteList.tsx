@@ -43,9 +43,7 @@ const fetchVillagersPage = async ({
       message?: string;
     } | null;
 
-    throw new Error(
-      errorBody?.message ?? "주민 데이터를 불러오지 못했습니다.",
-    );
+    throw new Error(errorBody?.message ?? "주민 데이터를 불러오지 못했습니다.");
   }
 
   return response.json();
@@ -118,9 +116,7 @@ export default function VillagersInfiniteList() {
   if (isError) {
     return (
       <section className="px-4 py-12 text-center text-red-600 sm:px-6 lg:px-8">
-        <p className="text-lg font-medium">
-          데이터를 불러오지 못했습니다.
-        </p>
+        <p className="text-lg font-medium">데이터를 불러오지 못했습니다.</p>
         <p className="mt-2 text-sm">{error?.message}</p>
       </section>
     );
@@ -134,7 +130,7 @@ export default function VillagersInfiniteList() {
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search villagers by name"
+          placeholder="찾고 싶은 주민을 검색해보세요"
           className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 pr-14 text-base text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
         />
         <Image
@@ -194,7 +190,8 @@ export default function VillagersInfiniteList() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
-                      생일: {villager.birthday_month}월 {villager.birthday_day}일
+                      생일: {villager.birthday_month}월 {villager.birthday_day}
+                      일
                     </span>
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
                       별자리: {villager.sign}

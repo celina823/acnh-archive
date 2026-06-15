@@ -19,7 +19,7 @@ export const getBugs = async (): Promise<BugType[]> => {
       "X-API-KEY": process.env.API_KEY!,
       "Accept-Version": "1.0.0",
     },
-    cache: "no-store",
+    next: { revalidate: 60 * 60 * 24 },
   });
 
   if (!response.ok) throw new Error("곤충 데이터를 불러오지 못했습니다.");

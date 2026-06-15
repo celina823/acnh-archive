@@ -13,8 +13,8 @@ export default function VillagersPage() {
               주민 목록
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-              이미지의 카드 레이아웃을 참고해 주민 정보를 카드 형태로
-              보여줍니다. 아래로 스크롤하면 자동으로 10개씩 더 불러옵니다.
+              다양한 주민 정보를 확인하고, 아래로 스크롤하여 더 많은 주민을
+              탐색해보세요.
             </p>
           </div>
         </div>

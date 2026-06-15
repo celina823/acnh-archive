@@ -13,7 +13,8 @@ export default function FurniturePage() {
               가구 목록
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-              아래로 스크롤하면 가구 데이터를 자동으로 더 불러옵니다.
+              다양한 가구 정보를 확인하고, 아래로 스크롤하여 더 많은 가구를
+              탐색해보세요.
             </p>
           </div>
         </div>

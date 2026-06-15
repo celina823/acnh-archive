@@ -16,7 +16,7 @@ export const getFish = async (): Promise<Fish[]> => {
       "X-API-KEY": process.env.API_KEY!,
       "Accept-Version": "1.0.0",
     },
-    cache: "no-store",
+    next: { revalidate: 60 * 60 * 24 },
   });
 
   if (!response.ok) {
