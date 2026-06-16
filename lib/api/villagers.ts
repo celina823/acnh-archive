@@ -1,5 +1,6 @@
 import { villagers as animalCrossingVillagers } from "animal-crossing";
 import { getKoKrSpeciesName } from "@/lib/mappings/villagerMappings";
+import { villagerKoKrOverridesByName } from "@/lib/mappings/villagerOverrides";
 import { VillagerType } from "@/types/villagersType";
 
 const animalCrossingVillagersByName = new Map(
@@ -26,14 +27,19 @@ export const getVillagers = async (): Promise<VillagerType[]> => {
 
   return villagers.map((villager) => {
     const matchingVillager = animalCrossingVillagersByName.get(villager.name);
+    const koKrOverride = villagerKoKrOverridesByName[villager.name];
 
     return {
       ...villager,
       species: getKoKrSpeciesName(villager.species),
-      catchphrase: matchingVillager?.catchphrases.kRko ?? villager.phrase,
+      catchphrase:
+        koKrOverride?.catchphrase ??
+        matchingVillager?.catchphrases.kRko ??
+        villager.phrase,
+      clothing: koKrOverride?.clothing ?? villager.clothing,
       translations: {
         ...villager.translations,
-        koKr: matchingVillager?.translations.kRko,
+        koKr: koKrOverride?.name ?? matchingVillager?.translations.kRko,
       },
     };
   });
