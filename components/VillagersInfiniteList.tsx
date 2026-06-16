@@ -9,7 +9,11 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import {
+  formatVillagerBirthdayMonth,
   formatVillagerColor,
+  formatVillagerGender,
+  formatVillagerPersonality,
+  formatVillagerSign,
   formatVillagerStyle,
 } from "@/lib/mappings/villagerMappings";
 import type { VillagerType } from "@/types/villagersType";
@@ -175,14 +179,14 @@ export default function VillagersInfiniteList() {
                     {displayName}
                   </h2>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-600">
-                    {villager.gender}
+                    {formatVillagerGender(villager.gender)}
                   </span>
                 </div>
 
                 <div className="grid gap-3 text-sm text-slate-700">
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
-                      성격: {villager.personality}
+                      성격: {formatVillagerPersonality(villager.personality)}
                     </span>
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
                       의상: {villager.clothing}
@@ -190,11 +194,11 @@ export default function VillagersInfiniteList() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
-                      생일: {villager.birthday_month}월 {villager.birthday_day}
-                      일
+                      생일: {formatVillagerBirthdayMonth(villager.birthday_month)}
+                      월 {villager.birthday_day}일
                     </span>
                     <span className="rounded-2xl bg-slate-100 px-3 py-1">
-                      별자리: {villager.sign}
+                      별자리: {formatVillagerSign(villager.sign)}
                     </span>
                   </div>
 

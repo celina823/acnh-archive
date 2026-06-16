@@ -64,8 +64,69 @@ export const villagerColorNames: Record<string, string> = {
   Yellow: "노랑",
 };
 
+export const villagerPersonalityNames: Record<string, string> = {
+  Cranky: "무뚝뚝",
+  Jock: "운동광",
+  Lazy: "먹보",
+  Smug: "느끼함",
+  Normal: "친절함",
+  Peppy: "아이돌",
+  Snooty: "성숙함",
+  Sisterly: "단순활발",
+  "Big Sister": "단순활발",
+};
+
+export const villagerBirthdayMonthNumbers: Record<string, string> = {
+  January: "1",
+  February: "2",
+  March: "3",
+  April: "4",
+  May: "5",
+  June: "6",
+  July: "7",
+  August: "8",
+  September: "9",
+  October: "10",
+  November: "11",
+  December: "12",
+};
+
+export const villagerSignNames: Record<string, string> = {
+  Aries: "양자리",
+  Taurus: "황소자리",
+  Gemini: "쌍둥이자리",
+  Cancer: "게자리",
+  Leo: "사자자리",
+  Virgo: "처녀자리",
+  Libra: "천칭자리",
+  Scorpio: "전갈자리",
+  Sagittarius: "사수자리",
+  Capricorn: "염소자리",
+  Aquarius: "물병자리",
+  Pisces: "물고기자리",
+};
+
+export const villagerGenderNames: Record<string, string> = {
+  Male: "남",
+  Female: "여",
+  MALE: "남",
+  FEMALE: "여",
+};
+
 export const getKoKrSpeciesName = (species: string) =>
   koKrSpeciesNames[species.toLowerCase()] ?? species;
+
+export const formatVillagerPersonality = (personality: string) =>
+  villagerPersonalityNames[personality] ?? personality;
+
+export const formatVillagerBirthdayMonth = (month: string) =>
+  villagerBirthdayMonthNumbers[month] ?? month;
+
+export const formatVillagerSign = (sign: string) =>
+  villagerSignNames[sign] ?? sign;
+
+export const formatVillagerGender = (gender: string) =>
+  villagerGenderNames[gender] ?? gender;
 
 export const formatVillagerStyle = (style: string) =>
   villagerStyleNames[style] ?? style;
