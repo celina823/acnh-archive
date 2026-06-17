@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import Image from "next/image";
 import {
   InfiniteData,
@@ -96,13 +97,7 @@ function getFakeTextureSrc(item: ArtItemType) {
   );
 }
 
-function ArtCard({
-  item,
-  onCompare,
-}: {
-  item: ArtItemType;
-  onCompare: (item: ArtItemType) => void;
-}) {
+function ArtCard({ item }: { item: ArtItemType }) {
   const displayName = item.translations?.koKr ?? item.name;
   const imageSrc = getRealImageSrc(item) || getFakeImageSrc(item);
   const description = formatArtDescription(
@@ -142,13 +137,9 @@ function ArtCard({
           </div>
 
           {item.has_fake ? (
-            <button
-              type="button"
-              onClick={() => onCompare(item)}
-              className="shrink-0 rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800 transition hover:bg-rose-200"
-            >
-              가품 정보
-            </button>
+            <span className="shrink-0 rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800 transition">
+              가품 존재
+            </span>
           ) : (
             <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
               진품만
@@ -211,20 +202,22 @@ function ArtComparisonModal({
       item.name,
       item.real_info?.description ?? item.description,
     ) ?? "진품 설명 정보 없음";
-  const fakeDescription =
-    formatArtAuthenticity(
-      item.name,
-      item.fake_info?.description ?? item.authenticity,
-    ) ?? "가품 설명 정보 없음";
+  const fakeDescription = item.has_fake
+    ? (formatArtAuthenticity(
+        item.name,
+        item.fake_info?.description ?? item.authenticity,
+      ) ?? "가품 설명 정보 없음")
+    : "이 작품은 진품만 존재합니다.";
   const originalTitle = formatArtOriginalTitle(item.name, item.art_name);
   const authenticity = formatArtAuthenticity(item.name, item.authenticity);
+  const fakePanelTitle = item.has_fake ? "가품" : "가품 없음";
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4 py-8"
       role="dialog"
       aria-modal="true"
-      aria-label={`${displayName} 가품 정보`}
+      aria-label={`${displayName} 진/가품 정보`}
       onClick={onClose}
     >
       <div
@@ -237,7 +230,7 @@ function ArtComparisonModal({
               {formatArtType(item.art_type)}
             </p>
             <h2 className="mt-1 text-lg font-semibold text-slate-900">
-              {displayName} 가품 정보
+              {displayName} 진/가품 정보
             </h2>
           </div>
           <button
@@ -279,7 +272,7 @@ function ArtComparisonModal({
 
           <div className="overflow-hidden rounded-3xl border border-rose-100 bg-white">
             <div className="border-b border-rose-100 px-4 py-3">
-              <h3 className="font-semibold text-rose-800">가품</h3>
+              <h3 className="font-semibold text-rose-800">{fakePanelTitle}</h3>
             </div>
             <div className="relative aspect-[4/3] bg-rose-50">
               {fakeImageSrc ? (
@@ -301,6 +294,7 @@ function ArtComparisonModal({
                 <span className="font-semibold text-slate-800">구분법: </span>
                 {authenticity || "정보 없음"}
               </p>
+              <p>{fakeDescription}</p>
             </div>
           </div>
         </div>
@@ -356,6 +350,16 @@ export default function ArtInfiniteList() {
     [fetchNextPage, hasNextPage, isFetchingNextPage],
   );
 
+  const handleCardKeyDown = (
+    event: KeyboardEvent<HTMLElement>,
+    item: ArtItemType,
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setSelectedArt(item);
+    }
+  };
+
   if (isLoading) {
     return (
       <section className="px-4 py-12 text-center text-slate-700 sm:px-6 lg:px-8">
@@ -383,9 +387,13 @@ export default function ArtInfiniteList() {
             <article
               key={`${item.name}-${item.art_name}`}
               ref={index === visibleArt.length - 1 ? lastItemRef : null}
-              className="group overflow-hidden rounded-[32px] border border-amber-100 bg-white shadow-lg shadow-amber-100/60 transition hover:-translate-y-1 hover:shadow-xl"
+              role="button"
+              tabIndex={0}
+              onClick={() => setSelectedArt(item)}
+              onKeyDown={(event) => handleCardKeyDown(event, item)}
+              className="group cursor-pointer overflow-hidden rounded-[32px] border border-amber-100 bg-white shadow-lg shadow-amber-100/60 transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
             >
-              <ArtCard item={item} onCompare={setSelectedArt} />
+              <ArtCard item={item} />
             </article>
           ))}
         </div>
