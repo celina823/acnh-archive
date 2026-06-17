@@ -16,6 +16,7 @@ import {
   formatArtOriginalTitle,
   formatArtStyle,
   formatArtType,
+  formatArtYear,
 } from "@/lib/mappings/artMappings";
 
 const ITEMS_PER_PAGE = 12;
@@ -74,6 +75,24 @@ function getFakeImageSrc(item: ArtItemType) {
     item.fake_info?.image_url ||
     item.fake_texture_url ||
     item.fake_info?.texture_url
+  );
+}
+
+function getRealTextureSrc(item: ArtItemType) {
+  return (
+    item.texture_url ||
+    item.real_info?.texture_url ||
+    item.image_url ||
+    item.real_info?.image_url
+  );
+}
+
+function getFakeTextureSrc(item: ArtItemType) {
+  return (
+    item.fake_texture_url ||
+    item.fake_info?.texture_url ||
+    item.fake_image_url ||
+    item.fake_info?.image_url
   );
 }
 
@@ -143,10 +162,10 @@ function ArtCard({
               작가: {formatArtAuthor(item.name, item.author)}
             </span>
             <span className="rounded-2xl bg-slate-100 px-3 py-1">
-              연도: {item.year || "정보 없음"}
+              연도: {formatArtYear(item.year)}
             </span>
             <span className="rounded-2xl bg-slate-100 px-3 py-1">
-              양식: {formatArtStyle(item.name, item.art_style)}
+              재료·기법: {formatArtStyle(item.name, item.art_style)}
             </span>
             <span className="rounded-2xl bg-slate-100 px-3 py-1">
               입수: {formatArtAvailability(item.availability)}
@@ -185,8 +204,8 @@ function ArtComparisonModal({
   onClose: () => void;
 }) {
   const displayName = item.translations?.koKr ?? item.name;
-  const realImageSrc = getRealImageSrc(item);
-  const fakeImageSrc = getFakeImageSrc(item);
+  const realImageSrc = getRealTextureSrc(item);
+  const fakeImageSrc = getFakeTextureSrc(item);
   const realDescription =
     formatArtDescription(
       item.name,
@@ -282,7 +301,6 @@ function ArtComparisonModal({
                 <span className="font-semibold text-slate-800">구분법: </span>
                 {authenticity || "정보 없음"}
               </p>
-              <p>{fakeDescription}</p>
             </div>
           </div>
         </div>
